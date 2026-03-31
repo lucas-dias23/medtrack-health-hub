@@ -14,7 +14,165 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clinicas: {
+        Row: {
+          created_at: string | null
+          id: string
+          nome: string
+          responsavel_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          nome: string
+          responsavel_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          nome?: string
+          responsavel_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinicas_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      consultas: {
+        Row: {
+          convenio_id: string | null
+          created_at: string | null
+          data: string
+          id: string
+          medico_id: string
+          observacoes: string | null
+          paciente_nome: string
+          procedimento: string
+          valor: number
+        }
+        Insert: {
+          convenio_id?: string | null
+          created_at?: string | null
+          data: string
+          id?: string
+          medico_id: string
+          observacoes?: string | null
+          paciente_nome: string
+          procedimento?: string
+          valor: number
+        }
+        Update: {
+          convenio_id?: string | null
+          created_at?: string | null
+          data?: string
+          id?: string
+          medico_id?: string
+          observacoes?: string | null
+          paciente_nome?: string
+          procedimento?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consultas_convenio_id_fkey"
+            columns: ["convenio_id"]
+            isOneToOne: false
+            referencedRelation: "convenios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultas_medico_id_fkey"
+            columns: ["medico_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      convenios: {
+        Row: {
+          ativo: boolean | null
+          cor: string | null
+          created_at: string | null
+          id: string
+          medico_id: string
+          nome: string
+          valor_padrao: number | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          cor?: string | null
+          created_at?: string | null
+          id?: string
+          medico_id: string
+          nome: string
+          valor_padrao?: number | null
+        }
+        Update: {
+          ativo?: boolean | null
+          cor?: string | null
+          created_at?: string | null
+          id?: string
+          medico_id?: string
+          nome?: string
+          valor_padrao?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "convenios_medico_id_fkey"
+            columns: ["medico_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          clinica_id: string | null
+          created_at: string | null
+          especialidade: string | null
+          id: string
+          nome: string
+          plano: string
+          trial_ativo: boolean | null
+          trial_inicio: string | null
+        }
+        Insert: {
+          clinica_id?: string | null
+          created_at?: string | null
+          especialidade?: string | null
+          id: string
+          nome: string
+          plano?: string
+          trial_ativo?: boolean | null
+          trial_inicio?: string | null
+        }
+        Update: {
+          clinica_id?: string | null
+          created_at?: string | null
+          especialidade?: string | null
+          id?: string
+          nome?: string
+          plano?: string
+          trial_ativo?: boolean | null
+          trial_inicio?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_clinica_id_fkey"
+            columns: ["clinica_id"]
+            isOneToOne: false
+            referencedRelation: "clinicas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
