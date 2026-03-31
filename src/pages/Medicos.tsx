@@ -42,30 +42,23 @@ export default function Medicos() {
   const [form, setForm] = useState({ nome: "", email: "", senha: "" });
   const [saving, setSaving] = useState(false);
 
-  if (!isClinica) {
-    return <BannerUpgrade mensagem="A gestão de médicos está disponível no plano Clínica." />;
-  }
-
   useEffect(() => {
-    if (user) loadData();
-  }, [user]);
+    if (user && isClinica) loadData();
+    else setLoading(false);
+  }, [user, isClinica]);
 
   const loadData = async () => {
-    // Get doctors belonging to this clinic
     const { data: profiles } = await supabase
       .from("profiles")
       .select("id, nome, especialidade")
       .eq("clinica_id", perfil?.clinica_id || user!.id);
 
-    // Also include the owner
     const allMedicos = profiles || [];
-    
-    // Get consultation counts
     const medicoIds = allMedicos.map(m => m.id);
     const { data: consultas } = await supabase
       .from("consultas")
       .select("medico_id")
-      .in("medico_id", medicoIds);
+      .in("medico_id", medicoIds.length > 0 ? medicoIds : ["none"]);
 
     const counts: Record<string, number> = {};
     (consultas || []).forEach((c: any) => {
@@ -76,6 +69,10 @@ export default function Medicos() {
     setLoading(false);
   };
 
+  if (!isClinica) {
+    return <BannerUpgrade mensagem="A gestão de médicos está disponível no plano Clínica." />;
+  }
+
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (medicos.length >= 5) {
@@ -83,11 +80,9 @@ export default function Medicos() {
       return;
     }
     setSaving(true);
-    // Note: In a real app, this would use an edge function to create users
-    // For MVP, we show the limitation
     toast({
       title: "Funcionalidade em desenvolvimento",
-      description: "A adição de médicos requer configuração de edge functions. Entre em contato com o suporte.",
+      description: "A adição de médicos requer configuração de edge functions.",
     });
     setSaving(false);
     setModalOpen(false);
@@ -122,9 +117,7 @@ export default function Medicos() {
           <Plus className="mr-1 h-4 w-4" /> Adicionar Médico
         </Button>
       </div>
-
       <p className="text-sm text-muted-foreground">{medicos.length}/5 médicos</p>
-
       {medicos.length === 0 ? (
         <div className="rounded-lg border border-border bg-card p-8 text-center">
           <p className="text-muted-foreground">Nenhum médico cadastrado na clínica.</p>
@@ -157,37 +150,17 @@ export default function Medicos() {
           <form onSubmit={handleAdd} className="space-y-4">
             <div>
               <label className="mb-1 block text-sm text-muted-foreground">Nome *</label>
-              <input
-                value={form.nome}
-                onChange={e => setForm(f => ({ ...f, nome: e.target.value }))}
-                required
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
-              />
+              <input value={form.nome} onChange={e => setForm(f => ({ ...f, nome: e.target.value }))} required className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary" />
             </div>
             <div>
               <label className="mb-1 block text-sm text-muted-foreground">Email *</label>
-              <input
-                type="email"
-                value={form.email}
-                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                required
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
-              />
+              <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary" />
             </div>
             <div>
               <label className="mb-1 block text-sm text-muted-foreground">Senha temporária *</label>
-              <input
-                type="password"
-                value={form.senha}
-                onChange={e => setForm(f => ({ ...f, senha: e.target.value }))}
-                required
-                minLength={6}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
-              />
+              <input type="password" value={form.senha} onChange={e => setForm(f => ({ ...f, senha: e.target.value }))} required minLength={6} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary" />
             </div>
-            <Button type="submit" disabled={saving} className="w-full">
-              {saving ? "Adicionando..." : "Adicionar"}
-            </Button>
+            <Button type="submit" disabled={saving} className="w-full">{saving ? "Adicionando..." : "Adicionar"}</Button>
           </form>
         </DialogContent>
       </Dialog>
@@ -200,9 +173,7 @@ export default function Medicos() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Remover
-            </AlertDialogAction>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Remover</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
