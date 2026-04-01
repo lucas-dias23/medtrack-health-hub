@@ -145,8 +145,8 @@ export default function Dashboard() {
         {/* Bar chart */}
         <div className="rounded-lg border border-border bg-card p-4">
           <h3 className="mb-4 text-sm font-medium text-foreground">Consultas por mês</h3>
-          <div className="overflow-x-auto">
-            <div className="min-w-[500px]" style={{ height: 240 }}>
+          <div>
+            <div style={{ height: 240 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={barData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(224 20% 14%)" />
