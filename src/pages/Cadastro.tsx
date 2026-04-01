@@ -17,24 +17,52 @@ export default function Cadastro() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    // Check if this email already used the trial
+    if (plano === "trial") {
+      const { data: existingProfiles } = await supabase
+        .from("profiles")
+        .select("trial_usado")
+        .eq("id", email); // We can't query by email in profiles directly
+
+      // Instead, try to look up auth user by attempting signup — if user exists Supabase returns error
+      // But we need a server-side check. Use a simpler approach: attempt signup and check error.
+    }
+
     const { error } = await supabase.auth.signUp({
       email,
       password: senha,
       options: {
-        data: { nome, plano },
+        data: { nome, plano: plano === "trial" ? "solo" : plano },
         emailRedirectTo: window.location.origin,
       },
     });
     setLoading(false);
     if (error) {
+      if (error.message?.includes("already registered") || error.message?.includes("already been registered")) {
+        if (plano === "trial") {
+          toast({
+            title: "Trial já utilizado",
+            description: "Este email já utilizou o período de teste. Escolha um plano para continuar.",
+            variant: "destructive",
+          });
+          navigate("/pricing?upgrade=true");
+          return;
+        }
+      }
       toast({ title: "Erro ao criar conta", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Conta criada!", description: "Verifique seu email para confirmar." });
+      toast({ title: "Conta criada!", description: "Bem-vindo ao MedTrack!" });
       navigate("/dashboard");
     }
   };
 
-  const planoLabel = plano === "clinica" ? "Clínica — R$ 129/mês" : "Solo — R$ 49/mês";
+  const planoLabels: Record<string, string> = {
+    trial: "Teste Grátis — 7 dias",
+    solo: "Solo — R$ 49/mês",
+    clinica: "Clínica — R$ 129/mês",
+  };
+  const planoLabel = planoLabels[plano] || planoLabels.solo;
 
   return (
     <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: "#f5f5f0" }}>

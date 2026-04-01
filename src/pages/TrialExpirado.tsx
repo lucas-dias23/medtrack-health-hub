@@ -11,7 +11,7 @@ export default function TrialExpirado() {
         Escolha um plano para continuar usando o MedTrack
       </p>
       <Button asChild className="mt-6">
-        <Link to="/pricing">Ver planos</Link>
+        <Link to="/pricing?upgrade=true">Ver planos</Link>
       </Button>
     </div>
   );

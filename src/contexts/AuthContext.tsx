@@ -10,6 +10,7 @@ interface Profile {
   clinica_id: string | null;
   trial_inicio: string | null;
   trial_ativo: boolean;
+  trial_usado: boolean;
 }
 
 interface AuthContextType {
