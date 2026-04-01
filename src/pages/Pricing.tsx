@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Check } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
@@ -53,13 +53,21 @@ const plans = [
 
 export default function Pricing() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const upgrade = searchParams.get("upgrade") === "true";
+
   let isLoggedIn = false;
+  let trialUsado = false;
   try {
-    const { user } = useAuth();
+    const { user, perfil } = useAuth();
     isLoggedIn = !!user;
+    trialUsado = perfil?.trial_usado ?? false;
   } catch {
     // not wrapped in AuthProvider (public route)
   }
+
+  const hideFreePlan = upgrade || trialUsado;
+  const visiblePlans = hideFreePlan ? plans.filter(p => !p.isFree) : plans;
 
   return (
     <div className="min-h-screen bg-background px-4 py-8">
@@ -75,11 +83,15 @@ export default function Pricing() {
         <div className="mb-12 text-center">
           <Logo />
           <h1 className="mt-4 font-display text-3xl text-foreground">Escolha seu plano</h1>
-          <p className="mt-2 text-muted-foreground">Comece com 7 dias grátis. Cancele quando quiser.</p>
+          <p className="mt-2 text-muted-foreground">
+            {hideFreePlan
+              ? "Escolha o plano ideal para você."
+              : "Comece com 7 dias grátis. Cancele quando quiser."}
+          </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          {plans.map(plan => (
+        <div className={`grid gap-6 ${hideFreePlan ? "md:grid-cols-2" : "md:grid-cols-3"}`}>
+          {visiblePlans.map(plan => (
             <div
               key={plan.name}
               className={`relative rounded-lg border p-6 ${
@@ -112,7 +124,7 @@ export default function Pricing() {
               </ul>
               <Button asChild className="mt-8 w-full">
                 <Link to={`/cadastro?plano=${plan.param}`}>
-                  {plan.isFree ? "Começar agora" : "Começar grátis"}
+                  {hideFreePlan ? "Assinar agora" : plan.isFree ? "Começar agora" : "Começar grátis"}
                 </Link>
               </Button>
             </div>

@@ -142,6 +142,7 @@ export type Database = {
           plano: string
           trial_ativo: boolean | null
           trial_inicio: string | null
+          trial_usado: boolean
         }
         Insert: {
           clinica_id?: string | null
@@ -152,6 +153,7 @@ export type Database = {
           plano?: string
           trial_ativo?: boolean | null
           trial_inicio?: string | null
+          trial_usado?: boolean
         }
         Update: {
           clinica_id?: string | null
@@ -162,6 +164,7 @@ export type Database = {
           plano?: string
           trial_ativo?: boolean | null
           trial_inicio?: string | null
+          trial_usado?: boolean
         }
         Relationships: [
           {
