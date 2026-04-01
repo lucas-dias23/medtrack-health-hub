@@ -78,7 +78,7 @@ export default function Pricing() {
           <p className="mt-2 text-muted-foreground">Comece com 7 dias grátis. Cancele quando quiser.</p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-3">
           {plans.map(plan => (
             <div
               key={plan.name}
@@ -93,8 +93,14 @@ export default function Pricing() {
               )}
               <h2 className="font-display text-xl text-foreground">{plan.name}</h2>
               <div className="mt-4 flex items-baseline gap-1">
-                <span className="font-display text-4xl text-foreground">R$ {plan.price}</span>
-                <span className="text-sm text-muted-foreground">/mês</span>
+                {plan.isFree ? (
+                  <span className="font-display text-4xl text-foreground">Grátis</span>
+                ) : (
+                  <>
+                    <span className="font-display text-4xl text-foreground">R$ {plan.price}</span>
+                    <span className="text-sm text-muted-foreground">/mês</span>
+                  </>
+                )}
               </div>
               <ul className="mt-6 space-y-3">
                 {plan.features.map(f => (
@@ -105,7 +111,9 @@ export default function Pricing() {
                 ))}
               </ul>
               <Button asChild className="mt-8 w-full">
-                <Link to={`/cadastro?plano=${plan.param}`}>Começar grátis</Link>
+                <Link to={`/cadastro?plano=${plan.param}`}>
+                  {plan.isFree ? "Começar agora" : "Começar grátis"}
+                </Link>
               </Button>
             </div>
           ))}
