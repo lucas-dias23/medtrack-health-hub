@@ -6,12 +6,26 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const plans = [
   {
+    name: "Teste Grátis",
+    price: "0",
+    param: "trial",
+    popular: false,
+    isFree: true,
+    features: [
+      "7 dias grátis",
+      "1 médico",
+      "Convênios ilimitados",
+      "Registro ilimitado de consultas",
+      "Dashboard completo com gráficos",
+    ],
+  },
+  {
     name: "Solo",
     price: "49",
     param: "solo",
     popular: false,
+    isFree: false,
     features: [
-      "Trial grátis de 7 dias",
       "1 médico",
       "Convênios ilimitados",
       "Registro ilimitado de consultas",
@@ -24,8 +38,8 @@ const plans = [
     price: "129",
     param: "clinica",
     popular: true,
+    isFree: false,
     features: [
-      "Trial grátis de 7 dias",
       "Até 5 médicos",
       "Tudo do Solo",
       "Relatórios exportáveis (Excel e PDF)",
