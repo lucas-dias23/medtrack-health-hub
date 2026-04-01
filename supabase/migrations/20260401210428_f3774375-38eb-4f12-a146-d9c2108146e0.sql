@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN trial_usado boolean NOT NULL DEFAULT false;
