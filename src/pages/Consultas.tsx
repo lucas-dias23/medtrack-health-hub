@@ -439,7 +439,7 @@ export default function Consultas() {
             <div className="space-y-3 text-sm">
               <div><span className="text-muted-foreground">Paciente:</span> <span className="text-foreground">{viewConsulta.paciente_nome}</span></div>
               <div><span className="text-muted-foreground">Convênio:</span> <span className="text-foreground">{viewConsulta.convenio?.nome || "Particular"}</span></div>
-              <div><span className="text-muted-foreground">Procedimento:</span> <span className="text-foreground">{viewConsulta.procedimento}</span></div>
+              <div><span className="text-muted-foreground">Tipo de Atendimento:</span> <span className="text-foreground">{viewConsulta.procedimento}</span></div>
               <div><span className="text-muted-foreground">Valor:</span> <span className="text-foreground">{formatCurrency(Number(viewConsulta.valor))}</span></div>
               <div><span className="text-muted-foreground">Data:</span> <span className="text-foreground">{new Date(viewConsulta.data).toLocaleDateString("pt-BR")}</span></div>
               {viewConsulta.observacoes && (
