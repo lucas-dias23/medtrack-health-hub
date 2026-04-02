@@ -163,7 +163,7 @@ export default function Dashboard() {
                       boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                     }}
                   />
-                  <Bar dataKey="total" fill="hsl(220 65% 55%)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="total" fill="hsl(220 65% 55%)" radius={[4, 4, 0, 0]} stroke="hsl(220 50% 45%)" strokeWidth={1} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
