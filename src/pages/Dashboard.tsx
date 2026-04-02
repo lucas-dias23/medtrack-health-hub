@@ -153,6 +153,7 @@ export default function Dashboard() {
                   <XAxis dataKey="mes" stroke="hsl(220 15% 50%)" fontSize={12} />
                   <YAxis stroke="hsl(220 15% 50%)" fontSize={12} allowDecimals={false} />
                   <Tooltip
+                    cursor={{ fill: 'transparent' }}
                     contentStyle={{
                       backgroundColor: "hsl(0 0% 100%)",
                       border: "1px solid hsl(220 15% 85%)",
