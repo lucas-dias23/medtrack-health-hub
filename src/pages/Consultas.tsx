@@ -374,7 +374,7 @@ export default function Consultas() {
                 onChange={e => handleConvenioChange(e.target.value)}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
               >
-                <option value="">Particular</option>
+                <option value="">Selecione um convênio</option>
                 {convenios.map(c => (
                   <option key={c.id} value={c.id}>{c.nome}</option>
                 ))}
