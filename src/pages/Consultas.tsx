@@ -381,13 +381,13 @@ export default function Consultas() {
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-sm text-muted-foreground">Procedimento</label>
+              <label className="mb-1 block text-sm text-muted-foreground">Tipo de Atendimento</label>
               <select
                 value={form.procedimento}
                 onChange={e => setForm(f => ({ ...f, procedimento: e.target.value }))}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
               >
-                {PROCEDIMENTOS.map(p => (
+                {TIPOS_ATENDIMENTO.map(p => (
                   <option key={p} value={p}>{p}</option>
                 ))}
               </select>
