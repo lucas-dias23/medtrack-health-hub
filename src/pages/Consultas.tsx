@@ -41,7 +41,16 @@ interface Consulta {
   convenio?: { nome: string; cor: string } | null;
 }
 
-const PROCEDIMENTOS = ["Consulta Clínica", "Retorno", "Primeira Consulta", "Procedimento"];
+const TIPOS_ATENDIMENTO = [
+  "Consulta Clínica",
+  "Primeira Consulta",
+  "Retorno",
+  "Consulta de Urgência",
+  "Exame e Avaliação",
+  "Pequeno Procedimento",
+  "Cirurgia Ambulatorial",
+  "Telemedicina",
+];
 
 export default function Consultas() {
   const { user } = useAuth();
