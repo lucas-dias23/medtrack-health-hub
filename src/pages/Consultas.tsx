@@ -41,7 +41,16 @@ interface Consulta {
   convenio?: { nome: string; cor: string } | null;
 }
 
-const PROCEDIMENTOS = ["Consulta Clínica", "Retorno", "Primeira Consulta", "Procedimento"];
+const TIPOS_ATENDIMENTO = [
+  "Consulta Clínica",
+  "Primeira Consulta",
+  "Retorno",
+  "Consulta de Urgência",
+  "Exame e Avaliação",
+  "Pequeno Procedimento",
+  "Cirurgia Ambulatorial",
+  "Telemedicina",
+];
 
 export default function Consultas() {
   const { user } = useAuth();
@@ -249,7 +258,7 @@ export default function Consultas() {
                 <tr className="border-b border-border text-left text-xs text-muted-foreground">
                   <th className="px-4 py-3">Paciente</th>
                   <th className="px-4 py-3">Convênio</th>
-                  <th className="px-4 py-3">Procedimento</th>
+                  <th className="px-4 py-3">Tipo de Atendimento</th>
                   <th className="px-4 py-3 text-right">Valor</th>
                   <th className="px-4 py-3 text-right">Data</th>
                   <th className="px-4 py-3 text-right">Ações</th>
@@ -372,13 +381,13 @@ export default function Consultas() {
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-sm text-muted-foreground">Procedimento</label>
+              <label className="mb-1 block text-sm text-muted-foreground">Tipo de Atendimento</label>
               <select
                 value={form.procedimento}
                 onChange={e => setForm(f => ({ ...f, procedimento: e.target.value }))}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
               >
-                {PROCEDIMENTOS.map(p => (
+                {TIPOS_ATENDIMENTO.map(p => (
                   <option key={p} value={p}>{p}</option>
                 ))}
               </select>
@@ -430,7 +439,7 @@ export default function Consultas() {
             <div className="space-y-3 text-sm">
               <div><span className="text-muted-foreground">Paciente:</span> <span className="text-foreground">{viewConsulta.paciente_nome}</span></div>
               <div><span className="text-muted-foreground">Convênio:</span> <span className="text-foreground">{viewConsulta.convenio?.nome || "Particular"}</span></div>
-              <div><span className="text-muted-foreground">Procedimento:</span> <span className="text-foreground">{viewConsulta.procedimento}</span></div>
+              <div><span className="text-muted-foreground">Tipo de Atendimento:</span> <span className="text-foreground">{viewConsulta.procedimento}</span></div>
               <div><span className="text-muted-foreground">Valor:</span> <span className="text-foreground">{formatCurrency(Number(viewConsulta.valor))}</span></div>
               <div><span className="text-muted-foreground">Data:</span> <span className="text-foreground">{new Date(viewConsulta.data).toLocaleDateString("pt-BR")}</span></div>
               {viewConsulta.observacoes && (
