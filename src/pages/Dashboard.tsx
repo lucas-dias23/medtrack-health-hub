@@ -184,22 +184,21 @@ export default function Dashboard() {
                     </Pie>
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "hsl(226 38% 9%)",
-                        border: "1px solid hsl(224 20% 14%)",
+                        backgroundColor: "hsl(0 0% 100%)",
+                        border: "1px solid hsl(220 15% 85%)",
                         borderRadius: 8,
-                        color: "hsl(220 30% 94%)",
+                        color: "hsl(220 20% 20%)",
+                        fontWeight: 600,
+                        fontSize: 13,
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                      }}
+                      itemStyle={{
+                        color: "hsl(220 20% 20%)",
+                        fontWeight: 600,
                       }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
-              </div>
-              <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-1">
-                {pieData.map(d => (
-                  <div key={d.name} className="flex items-center gap-2 text-xs text-foreground">
-                    <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ backgroundColor: d.color }} />
-                    {d.name}
-                  </div>
-                ))}
               </div>
             </div>
           )}
