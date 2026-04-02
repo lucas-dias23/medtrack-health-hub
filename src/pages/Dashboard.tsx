@@ -149,15 +149,17 @@ export default function Dashboard() {
             <div style={{ height: 240 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={barData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(224 20% 14%)" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 15% 90%)" />
                   <XAxis dataKey="mes" stroke="hsl(220 15% 50%)" fontSize={12} />
                   <YAxis stroke="hsl(220 15% 50%)" fontSize={12} allowDecimals={false} />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "hsl(226 38% 9%)",
-                      border: "1px solid hsl(224 20% 14%)",
+                      backgroundColor: "hsl(0 0% 100%)",
+                      border: "1px solid hsl(220 15% 85%)",
                       borderRadius: 8,
-                      color: "hsl(220 30% 94%)",
+                      color: "hsl(220 20% 20%)",
+                      fontWeight: 600,
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                     }}
                   />
                   <Bar dataKey="total" fill="hsl(220 65% 55%)" radius={[4, 4, 0, 0]} />
