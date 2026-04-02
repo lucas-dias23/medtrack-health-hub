@@ -258,7 +258,7 @@ export default function Consultas() {
                 <tr className="border-b border-border text-left text-xs text-muted-foreground">
                   <th className="px-4 py-3">Paciente</th>
                   <th className="px-4 py-3">Convênio</th>
-                  <th className="px-4 py-3">Procedimento</th>
+                  <th className="px-4 py-3">Tipo de Atendimento</th>
                   <th className="px-4 py-3 text-right">Valor</th>
                   <th className="px-4 py-3 text-right">Data</th>
                   <th className="px-4 py-3 text-right">Ações</th>
