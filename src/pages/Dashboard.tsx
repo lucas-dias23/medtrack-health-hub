@@ -230,7 +230,7 @@ export default function Dashboard() {
                 <tr className="border-b border-border text-left text-xs text-muted-foreground">
                   <th className="pb-2">Paciente</th>
                   <th className="pb-2">Convênio</th>
-                  <th className="hidden pb-2 md:table-cell">Procedimento</th>
+                  <th className="hidden pb-2 md:table-cell">Tipo de Atendimento</th>
                   <th className="pb-2 text-right">Valor</th>
                   <th className="hidden pb-2 md:table-cell text-right">Data</th>
                 </tr>
