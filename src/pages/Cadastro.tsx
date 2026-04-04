@@ -29,15 +29,34 @@ export default function Cadastro() {
       // But we need a server-side check. Use a simpler approach: attempt signup and check error.
     }
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password: senha,
-      options: {
-        data: { nome, plano: plano === "trial" ? "solo" : plano },
-        emailRedirectTo: window.location.origin,
+    const planoSelecionado = plano === "trial" ? "solo" : plano;
+
+    const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/criar-conta`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
       },
+      body: JSON.stringify({
+        nome,
+        email,
+        senha,
+        plano: planoSelecionado,
+        emailRedirectTo: window.location.origin,
+      }),
     });
+
+    const data = await response.json();
+
+    if (response.ok && data?.session?.access_token && data?.session?.refresh_token) {
+      await supabase.auth.setSession({
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token,
+      });
+    }
+
     setLoading(false);
+    const error = response.ok ? null : { message: data?.error || "Erro ao criar conta" };
     if (error) {
       if (error.message?.includes("already registered") || error.message?.includes("already been registered")) {
         if (plano === "trial") {
