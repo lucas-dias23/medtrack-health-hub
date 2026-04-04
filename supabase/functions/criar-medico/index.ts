@@ -20,6 +20,12 @@ Deno.serve(async (req) => {
       );
     }
 
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    // Verify user from token
     const supabaseUser = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
@@ -34,24 +40,51 @@ Deno.serve(async (req) => {
       );
     }
 
-    const { data: clinica, error: clinicaError } = await supabaseUser
+    // Check if user has plano clinica using admin client (bypasses RLS)
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("id, nome, plano")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile || profile.plano !== "clinica") {
+      return new Response(
+        JSON.stringify({ error: "Apenas usuários do plano Clínica podem adicionar médicos" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Find or create clinica for this user
+    let { data: clinica } = await supabaseAdmin
       .from("clinicas")
       .select("id")
       .eq("responsavel_id", user.id)
       .single();
 
-    if (clinicaError || !clinica) {
-      return new Response(
-        JSON.stringify({ error: "Apenas responsáveis de clínica podem adicionar médicos" }),
-        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    if (!clinica) {
+      const { data: novaClinica, error: clinicaError } = await supabaseAdmin
+        .from("clinicas")
+        .insert({ nome: `Clínica de ${profile.nome}`, responsavel_id: user.id })
+        .select("id")
+        .single();
+
+      if (clinicaError || !novaClinica) {
+        return new Response(
+          JSON.stringify({ error: "Erro ao criar clínica" }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      // Update the responsavel's own profile with clinica_id
+      await supabaseAdmin
+        .from("profiles")
+        .update({ clinica_id: novaClinica.id })
+        .eq("id", user.id);
+
+      clinica = novaClinica;
     }
 
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
-
+    // Check 5 doctor limit
     const { count } = await supabaseAdmin
       .from("profiles")
       .select("*", { count: "exact", head: true })
