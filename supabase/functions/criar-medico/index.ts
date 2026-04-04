@@ -97,7 +97,9 @@ Deno.serve(async (req) => {
       );
     }
 
-    const { nome, email, senha, especialidade } = await req.json();
+    const body = await req.json();
+    const { nome, email, senha, especialidade } = body;
+    console.log("Dados recebidos do formulário:", JSON.stringify({ nome, email, especialidade }));
     if (!nome || !email || !senha) {
       return new Response(
         JSON.stringify({ error: "Nome, email e senha são obrigatórios" }),
