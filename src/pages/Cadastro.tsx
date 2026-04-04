@@ -29,14 +29,37 @@ export default function Cadastro() {
       // But we need a server-side check. Use a simpler approach: attempt signup and check error.
     }
 
-    const { error } = await supabase.auth.signUp({
+    const planoSelecionado = plano === "trial" ? "solo" : plano;
+
+    const { data, error } = await supabase.auth.signUp({
       email,
       password: senha,
       options: {
-        data: { nome, plano: plano === "trial" ? "solo" : plano },
+        data: { nome, plano: planoSelecionado },
         emailRedirectTo: window.location.origin,
       },
     });
+
+    if (!error && data.user) {
+      const { error: profileError } = await supabase.from("profiles").upsert(
+        {
+          id: data.user.id,
+          nome,
+          plano: planoSelecionado,
+          trial_inicio: new Date().toISOString(),
+          trial_ativo: true,
+          trial_usado: false,
+        },
+        { onConflict: "id" }
+      );
+
+      if (profileError) {
+        setLoading(false);
+        toast({ title: "Erro ao criar conta", description: profileError.message, variant: "destructive" });
+        return;
+      }
+    }
+
     setLoading(false);
     if (error) {
       if (error.message?.includes("already registered") || error.message?.includes("already been registered")) {
