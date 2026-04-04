@@ -131,23 +131,28 @@ Deno.serve(async (req) => {
     }
 
     console.log("Usuário criado, ID:", novoUsuario.user.id);
-    console.log("Atualizando profile com:", JSON.stringify({
+    console.log("Inserindo profile com:", JSON.stringify({
       id: novoUsuario.user.id,
+      nome,
       especialidade: especialidade || null,
       plano: "clinica",
       clinica_id: clinica.id,
       trial_ativo: false,
+      trial_usado: false,
     }));
 
     const { error: profileError } = await supabaseAdmin
       .from("profiles")
-      .update({
+      .insert({
+        id: novoUsuario.user.id,
+        nome,
         especialidade: especialidade || null,
         plano: "clinica",
         clinica_id: clinica.id,
         trial_ativo: false,
+        trial_usado: false,
       })
-      .eq("id", novoUsuario.user.id);
+      ;
 
     if (profileError) {
       await supabaseAdmin.auth.admin.deleteUser(novoUsuario.user.id);
