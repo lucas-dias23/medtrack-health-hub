@@ -56,7 +56,7 @@ export default function Medicos() {
 
     const allMedicos = profiles || [];
     const medicoIds = allMedicos.map(m => m.id);
-    let counts: Record<string, number> = {};
+    const counts: Record<string, number> = {};
     if (medicoIds.length > 0) {
       const { data: consultas } = await supabase
         .from("consultas")
@@ -66,11 +66,6 @@ export default function Medicos() {
         counts[c.medico_id] = (counts[c.medico_id] || 0) + 1;
       });
     }
-
-    const counts: Record<string, number> = {};
-    (consultas || []).forEach((c: any) => {
-      counts[c.medico_id] = (counts[c.medico_id] || 0) + 1;
-    });
 
     setMedicos(allMedicos.map(m => ({ ...m, consultas_count: counts[m.id] || 0 })));
     setLoading(false);
