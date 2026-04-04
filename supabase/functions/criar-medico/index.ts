@@ -114,6 +114,7 @@ Deno.serve(async (req) => {
       );
     }
 
+    console.log("Criando usuário no Auth com nome:", nome);
     const { data: novoUsuario, error: createError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password: senha,
@@ -122,11 +123,21 @@ Deno.serve(async (req) => {
     });
 
     if (createError) {
+      console.log("Erro ao criar usuário:", createError.message);
       return new Response(
         JSON.stringify({ error: createError.message }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    console.log("Usuário criado, ID:", novoUsuario.user.id);
+    console.log("Atualizando profile com:", JSON.stringify({
+      id: novoUsuario.user.id,
+      especialidade: especialidade || null,
+      plano: "clinica",
+      clinica_id: clinica.id,
+      trial_ativo: false,
+    }));
 
     const { error: profileError } = await supabaseAdmin
       .from("profiles")
