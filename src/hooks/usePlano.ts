@@ -27,5 +27,5 @@ export function usePlano() {
     }
   }, [trialExpirado, perfil]);
 
-  return { isClinica, isSolo, diasTrial, trialAtivo, trialExpirado, trialUsado };
+  return { isClinica, isSolo, isPlanoPago, diasTrial, trialAtivo, trialExpirado, trialUsado };
 }
