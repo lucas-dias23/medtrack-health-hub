@@ -31,36 +31,32 @@ export default function Cadastro() {
 
     const planoSelecionado = plano === "trial" ? "solo" : plano;
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password: senha,
-      options: {
-        data: { nome, plano: planoSelecionado },
-        emailRedirectTo: window.location.origin,
+    const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/criar-conta`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
       },
+      body: JSON.stringify({
+        nome,
+        email,
+        senha,
+        plano: planoSelecionado,
+        emailRedirectTo: window.location.origin,
+      }),
     });
 
-    if (!error && data.user) {
-      const { error: profileError } = await supabase.from("profiles").upsert(
-        {
-          id: data.user.id,
-          nome,
-          plano: planoSelecionado,
-          trial_inicio: new Date().toISOString(),
-          trial_ativo: true,
-          trial_usado: false,
-        },
-        { onConflict: "id" }
-      );
+    const data = await response.json();
 
-      if (profileError) {
-        setLoading(false);
-        toast({ title: "Erro ao criar conta", description: profileError.message, variant: "destructive" });
-        return;
-      }
+    if (response.ok && data?.session?.access_token && data?.session?.refresh_token) {
+      await supabase.auth.setSession({
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token,
+      });
     }
 
     setLoading(false);
+    const error = response.ok ? null : { message: data?.error || "Erro ao criar conta" };
     if (error) {
       if (error.message?.includes("already registered") || error.message?.includes("already been registered")) {
         if (plano === "trial") {
