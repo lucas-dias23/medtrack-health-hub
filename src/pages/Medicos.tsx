@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2 } from "lucide-react";
+import { criarMedico } from "@/lib/criarMedico";
 import {
   Dialog,
   DialogContent,
@@ -39,7 +40,7 @@ export default function Medicos() {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [form, setForm] = useState({ nome: "", email: "", senha: "" });
+  const [form, setForm] = useState({ nome: "", email: "", senha: "", especialidade: "" });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -80,12 +81,22 @@ export default function Medicos() {
       return;
     }
     setSaving(true);
-    toast({
-      title: "Funcionalidade em desenvolvimento",
-      description: "A adição de médicos requer configuração de edge functions.",
-    });
-    setSaving(false);
-    setModalOpen(false);
+    try {
+      await criarMedico({
+        nome: form.nome,
+        email: form.email,
+        senha: form.senha,
+        especialidade: form.especialidade || undefined,
+      });
+      toast({ title: "Médico adicionado!", description: `${form.nome} já pode fazer login.` });
+      setModalOpen(false);
+      setForm({ nome: "", email: "", senha: "", especialidade: "" });
+      loadData();
+    } catch (error: any) {
+      toast({ title: "Erro", description: error.message, variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleDelete = async () => {
@@ -159,6 +170,10 @@ export default function Medicos() {
             <div>
               <label className="mb-1 block text-sm text-muted-foreground">Senha temporária *</label>
               <input type="password" value={form.senha} onChange={e => setForm(f => ({ ...f, senha: e.target.value }))} required minLength={6} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary" />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm text-muted-foreground">Especialidade</label>
+              <input value={form.especialidade} onChange={e => setForm(f => ({ ...f, especialidade: e.target.value }))} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary" />
             </div>
             <Button type="submit" disabled={saving} className="w-full">{saving ? "Adicionando..." : "Adicionar"}</Button>
           </form>
