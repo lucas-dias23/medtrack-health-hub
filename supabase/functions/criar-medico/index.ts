@@ -143,7 +143,7 @@ Deno.serve(async (req) => {
 
     const { error: profileError } = await supabaseAdmin
       .from("profiles")
-      .insert({
+      .upsert({
         id: novoUsuario.user.id,
         nome,
         especialidade: especialidade || null,
@@ -151,8 +151,7 @@ Deno.serve(async (req) => {
         clinica_id: clinica.id,
         trial_ativo: false,
         trial_usado: false,
-      })
-      ;
+      }, { onConflict: "id" });
 
     if (profileError) {
       await supabaseAdmin.auth.admin.deleteUser(novoUsuario.user.id);
