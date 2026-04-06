@@ -49,10 +49,25 @@ export default function Medicos() {
   }, [user, isClinica]);
 
   const loadData = async () => {
+    // First get the clinica for this responsavel
+    const { data: clinica } = await supabase
+      .from("clinicas")
+      .select("id")
+      .eq("responsavel_id", user!.id)
+      .single();
+
+    if (!clinica) {
+      setMedicos([]);
+      setLoading(false);
+      return;
+    }
+
     const { data: profiles } = await supabase
       .from("profiles")
-      .select("id, nome, especialidade")
-      .eq("clinica_id", perfil?.clinica_id || user!.id);
+      .select("id, nome, especialidade, created_at")
+      .eq("clinica_id", clinica.id)
+      .neq("id", user!.id)
+      .order("created_at", { ascending: true });
 
     const allMedicos = profiles || [];
     const medicoIds = allMedicos.map(m => m.id);
