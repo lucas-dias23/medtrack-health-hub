@@ -88,7 +88,8 @@ Deno.serve(async (req) => {
     const { count } = await supabaseAdmin
       .from("profiles")
       .select("*", { count: "exact", head: true })
-      .eq("clinica_id", clinica.id);
+      .eq("clinica_id", clinica.id)
+      .neq("id", user.id);
 
     if (count !== null && count >= 5) {
       return new Response(
